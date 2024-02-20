@@ -1,0 +1,16 @@
+{{ extends "global/Page.html" }}
+{{ block title }}
+    <h1>Bidding</h1>>
+{{ endblock }}
+
+{{ block content }}
+    <br><br>
+    <p>
+    You are one of {{ C.PLAYERS_PER_GROUP }} players who are bidding in an auction. Your value of the good is {{ player.value }}
+    </p>
+    <br><br>
+
+    {{ formfields }}
+    {{ next_button }}
+
+{{ endblock }}
