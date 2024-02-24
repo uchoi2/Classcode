@@ -80,4 +80,4 @@ def setPayoffs(g: Group):           #set_payoffs = setPayoffs
                                + g.mpcr*g.total_contribution/C.PLAYERS_PER_GROUP
         p.participant.vars['totalEarnings'] += p.participant.payoff
 
-    # I need to check this precisely uploaded at the Github Errorchecking
+    # I need to check this precisely uploaded at the Github
