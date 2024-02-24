@@ -8,7 +8,7 @@ class Subsession(BaseSubsession):
 class C(BaseConstants):
     NAME_IN_URL = 'public_goods_simple'
     PLAYERS_PER_GROUP = 3
-    NUM_ROUNDS = 2
+    NUM_ROUNDS = 4
     ENDOWMENT = cu(1000)
     # Other way to define multiple MPCR
     MPCR_1 = 0.4
@@ -22,22 +22,11 @@ class Player(BasePlayer):                       # Individual Action Class
         max=C.ENDOWMENT,                        # Maximum contribution
         label="How much will you contribute?"   # Text displayed on the player's screen
     )
-    cumulative_payoff = models.CurrencyField(initial=0)
 
 class Group(BaseGroup):                         # Group Action define
     mpcr = models.FloatField(initial=0)
     total_contribution= models.CurrencyField()  # Total Contribution
     individual_share= models.CurrencyField()    # Individual Share
-
-#Define payoff functions
-def set_payoffs(group: Group):
-    players = group.get_players()               # Constructing Groups
-    contributions = [p.contribution for p in players]
-    group.total_contribution = sum(contributions)
-    group.individual_share = group.total_contribution * C.MULTIPLIER / C.PLAYERS_PER_GROUP
-    for player in players:
-        player.payoff = C.ENDOWMENT - player.contribution + group.individual_share
-        player.cumulative_payoff += player.payoff
 
 #Define pages
 #Page 1, Contribute
@@ -80,15 +69,15 @@ def creating_session(subsession):
 
 def setPayoffs(g: Group):           #set_payoffs = setPayoffs
     # calculate total group contribution
-    total_contribution = 0
+    g.total_contribution = 0
     for p in g.get_players():
-        total_contribution += p.contribution
+        g.total_contribution += p.contribution
 
     # calculate individual earnings
     for p in g.get_players():
         p.participant.payoff = C.ENDOWMENT \
                                - p.contribution \
-                               + g.mpcr*total_contribution/C.PLAYERS_PER_GROUP
+                               + g.mpcr*g.total_contribution/C.PLAYERS_PER_GROUP
         p.participant.vars['totalEarnings'] += p.participant.payoff
 
     # I need to check this precisely uploaded at the Github

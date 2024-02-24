@@ -5,9 +5,8 @@
         You started with an endowment of {{ C.ENDOWMENT }},
         of which you contributed {{ player.contribution }}.
         Your group contributed {{ group.total_contribution }},
-        resulting in an individual share of {{ group.individual_share }}.
-        Your profit is therefore {{ player.payoff }}.
-        Your Cumulative profit is therefore {{ player.cumulative_payoff }}
+        Your profit is therefore {{ player.participant.payoff }}.
+        Your Cumulative profit is therefore {{ player.participant.vars.totalEarnings }}
     </p>
 
     {{ next_button }}
