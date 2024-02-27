@@ -1,12 +1,12 @@
-from otree.api import models, Page
+from otree.api import *
 import random
 
 #Define basic constant
 class C(BaseConstants):
-    NAME_IN_URL = '2nd Price Sealed Bid'
+    NAME_IN_URL = '2nd_Price_Sealed_Bid'
     PLAYERS_PER_GROUP = 3
-    NUM_ROUNDS = 4
-    ENDOWMENT = cu(1000)
+    NUM_ROUNDS = 1
+
 class Subsession(BaseSubsession):
     pass
 
@@ -18,7 +18,7 @@ class Group(BaseGroup):
 class Player(BasePlayer):
     bid = models.CurrencyField(initial=0)
     value = models.CurrencyField()
-    win = models.BooleanField()             #Binary Variable Field
+    win = models.BooleanField(initial=False)             #Binary Variable Field
     price = models.CurrencyField()
 
 #Functions
@@ -76,5 +76,6 @@ class ResultsWaitPage(WaitPage):
 
 #Page 3, Results pape
 class Results(Page):
+    pass
 
 page_sequence = [bid, ResultsWaitPage, Results]

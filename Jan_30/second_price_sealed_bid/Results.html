@@ -1,0 +1,23 @@
+{% extends "global/Page.html" %}
+{% load otree %}
+{{ block title }} Results {{ endblock }}
+
+{{ block content }}
+    <p>
+        Your value was {{ player.value }}
+        <br><br>
+        Your bid was {{ player.bid }}
+        <br><br>
+        The highest bid was {{ group.highest_bid }}
+        <br><br>
+        The second highest bid was {{ group.second_highest_bid }}
+        <br><br>
+        You {% if player.win == True %} won {% else %} did not win {% endif %} the auction.
+        <br><br>
+        Your period payoff: {{ player.payoff }}
+
+    </p>
+
+{{ next_button }}
+
+{{ endblock }}
