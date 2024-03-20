@@ -1,0 +1,28 @@
+{{ block title }}
+    geom example
+{{ endblock }}
+{{ block content }}
+
+    <div style = "text-align:center;">
+        <canvas id="myCanvas" width="600" height="600" style="border:1px solid #000000;"></canvas>
+    </div>
+
+    {{ formfields }}
+    {{ next_button }}
+
+{{ endblock }}
+
+{{ block script }}
+    <script>
+        let c = document.getElementById('myCanvas');
+        let ctx = c.getContext('2d');
+        ctx.beginPath();
+        ctx.arc(300,300,100,0,2*Math.PI);
+        ctx.rect(100,100,200,200);
+        ctx.fillstyle = 'red';
+        ctx.fillText('Hi everyone', 400,400);
+        ctx.stroke();
+
+    </script>
+
+{{ endblock }}

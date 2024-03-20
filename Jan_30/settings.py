@@ -9,6 +9,12 @@ SESSION_CONFIGS = [
         num_demo_participants=3,
     ),
     dict(
+        name='class_mar19',
+        display_name="geomexample",
+        app_sequence=['class_mar19', 'payment_info'],
+        num_demo_participants=3,
+    ),
+    dict(
         name='survey', app_sequence=['survey', 'payment_info'], num_demo_participants=1
     ),
 ]
