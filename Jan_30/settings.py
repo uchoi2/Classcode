@@ -46,6 +46,12 @@ ROOMS = [
         participant_label_file='_rooms/econ101.txt',
     ),
     dict(name='live_demo', display_name='Room for live demo (no participant labels)'),
+    dict(
+        name='econ9942',
+        display_name='Econ 9942 class',
+        participant_label_file='_rooms/econ9942.txt',
+        use_secure_urls=True,
+    )
 ]
 
 ADMIN_USERNAME = 'admin'
