@@ -1,7 +1,6 @@
 from otree.api import *
 import random
 import numpy as np
-from otree.models import player
 
 
 class Subsession(BaseSubsession):
@@ -33,7 +32,7 @@ def creating_session(s):
         else:
             p.type = 'second_mover'
     # randomly shuffle all second movers
-    print(-------------------------------)
+    print("-------------------------------")
     print('round' + str(s.round_number) + 'default group matrix')
     m = s.get_group_matrix()
     print(m)
@@ -70,7 +69,8 @@ def setPayoffs(g: Group):
 
     g.seconds = 0
     for p in g.get_players():
-        p.noise = np.random.uniform(-10,10)
+        p.no = np.random.uniform(0,20)
+        p.noise = p.no - 10
         p.signal = g.assetvalue + round(p.noise, 3)
         g.first = p.portfolio
         if p.option == 'option C':
