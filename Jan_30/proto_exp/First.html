@@ -1,12 +1,12 @@
 {{ extends "global/Page.html" }}
 {{ block title }}
-    <h1> Round {{ group.round }} of the First Mover </h1>
+    <h1> Round {{ group.round_number }} of the First Mover </h1>
 {{ endblock }}
 
 {{ block content }}
     <br><br>
     <p>
-        Round {{ group.round  }}
+        Round {{ group.round_number  }}
         You are the first mover.
         Your payoff is determined as the average of the payoffs of two second movers
         You have 10 number of tokens to allocate between the asset A and the asset B

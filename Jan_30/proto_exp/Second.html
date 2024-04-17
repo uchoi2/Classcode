@@ -1,14 +1,14 @@
 {{ extends "global/Page.html" }}
 {{ block title }}
-    <h1> Round {{ group.round }} of the Second Mover </h1>
+    <h1> Round {{ group.round_number }} of the Second Mover </h1>
 {{ endblock }}
 
 {{ block content }}
     <br><br>
     <p>
-        Round {{ group.round }}
+        Round {{ group.round_number }}
         You are the second mover.
-        The first mover choose to allocate {{ group.first }} tokens on asset A.
+        The first mover choose to allocate {{ group.portfolio }} tokens on asset A.
         You get $ {{ player.signal }} as a signal for the value of the asset A.
         A noise is equally likely ranging from -$10 to $10.
         Hence, the real value of the asset A is surely within the range from {{ player.lower }} to {{ player.upper }}.

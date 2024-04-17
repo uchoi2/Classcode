@@ -9,20 +9,43 @@ class Subsession(BaseSubsession):
 class C(BaseConstants):
     NAME_IN_URL = 'Financial_Stability'
     PLAYERS_PER_GROUP = 3
-    NUM_ROUNDS = 27
+    NUM_ROUNDS = 2
 
 class Player(BasePlayer):
+    option = models.BooleanField(
+        choices=[(True, 'Option C'), (False, 'Option D'),]
+    )
+    type = models.StringField()
+    no = models.FloatField()
+    sigval = models.FloatField()
+    signal = models.FloatField()
+    upper = models.FloatField()
+    lower = models.FloatField()
+    payoff_lower = models.FloatField()
+    payoff_upper = models.FloatField()
+    payoff_lower_50 = models.FloatField()
+    payoff_upper_50 = models.FloatField()
+    pay_round = models.FloatField(
+        min=0,
+        max=160,
+    )
+
+
+
+class Group(BaseGroup):
     portfolio = models.IntegerField(
         min=0,
         max=10
     )
-    option = models.BooleanField(
-        choices=[(True, 'Option C'), (False, 'Option D'),]
+    rn = models.IntegerField(
+        min=-5,
+        max=20,
     )
-    type = models.IntegerField()
-
-class Group(BaseGroup):
-    pass
+    assetvalue = models.FloatField()
+    seconds = models.IntegerField(
+        min=0,
+        max=2,
+    )
 
 
 def creating_session(s):
@@ -61,118 +84,141 @@ def creating_session(s):
 
     s.set_group_matrix(new_m)
 
-    print('round' + str(s.NUM_ROUNDS) + 'modified group matrix')
+    print('round' + str(s.round_number) + 'modified group matrix')
+
+    for g in s.get_groups():
+        g.rn = g.round_number
+        g.assetvalue = round(np.random.uniform(90, 160), 3)
+        for p in g.get_players():
+            p.no = round(np.random.uniform(0,20) - 10, 3)
+            p.sigval = g.assetvalue + p.no
+            if p.sigval >= 160:
+                p.signal = 160
+            elif p.sigval <= 90:
+                p.signal = 90
+            elif p.sigval <= 160 and p.sigval >= 90:
+                p.signal = p.sigval
+            if p.signal >= 150:
+                p.upper = 160
+            else:
+                p.upper = p.signal + 10
+            if p.signal <= 100:
+                p.lower = 90
+            else:
+                p.lower = p.signal - 10
+
+def portfolio_choice(g: Group):
+    return g.portfolio
+
+
 
 def setPayoffs(g: Group):
     # Set up the baseline info
-    g.assetdraw = np.random.uniform(90, 160)
-    g.assetvalue = round(g.assetdraw, 3)
-
     g.seconds = 0
-    g.options = []
-    g.round = g.round_number - 6
     for p in g.get_players():
-        p.no = np.random.uniform(0,20)
-        p.noise = p.no - 10
-        p.sigval = g.assetvalue + round(p.noise,30)
-        if p.sigval >= 160:
-            p.signal = 160
-        elif p.sigval <= 90:
-            p.signal = 90
-        elif p.sigval <= 160 and p.sigval >= 90:
-            p.signal = p.sigval
-        if p.signal >= 150:
-            p.upper = 160
-        else:
-            p.upper = p.signal + 10
-        if p.signal <= 100:
-            p.lower = 90
-        else:
-            p.lower = p.signal - 10
-        g.first = p.portfolio
-        p.payoff_upper = (g.first/10)*p.upper + ((10 - g.first)/10)*125
-        p.payoff_lower = (g.first/10)*p.lower + ((10 - g.first)/10)*125
-        p.payoff_upper_50 = p.payoff_upper - 50
-        p.payoff_lower_50 = p.payoff_lower - 50
-        if p.option == 'option C':
+        if p.option == True and p.type == 'second_mover':
             g.seconds += 1
-        g.options.append(p.option)
-        p.paylist = []
-        if p.type == 'second_mover' and p.option == 'option C' and g.seconds == 2:
-            p.payoff = (g.first/10)*g.assetvalue + ((10-g.first)/10)*125
-            p.paylist.append(p.payoff)
-        elif p.type == 'second_mover' and p.option == 'option C' and g.seconds == 1:
-            p.payoff = (g.first/10)*g.assetvalue + ((10-g.first)/10)*125 - 50
-            p.paylist.append(p.payoff)
-        elif p.type == 'second_mover' and p.option == 'option D':
-            p.payoff = 100
-            p.paylist.append(p.payoff)
+    for p in g.get_players():
+        if p.type == 'second_mover' and p.option == True and g.seconds == 2:
+            p.pay_round = (g.portfolio/10)*g.assetvalue + ((10-g.portfolio)/10)*125
+        elif p.type == 'second_mover' and p.option == True and g.seconds == 1:
+            p.pay_round = (g.portfolio/10)*g.assetvalue + ((10-g.portfolio)/10)*125 - 50
+        elif p.type == 'second_mover' and p.option == False:
+            p.pay_round = 100
         elif p.type == 'first_mover' and g.seconds == 2:
-            p.payoff = (g.first/10)*g.assetvalue + ((10-g.first)/10)*125
-            p.paylist.append(p.payoff)
+            p.pay_round = (g.portfolio/10)*g.assetvalue + ((10-g.portfolio)/10)*125
         elif p.type == 'first_mover' and g.seconds == 1:
-            p.payoff = (g.first/10)*g.assetvalue + ((10-g.first)/10)*125 - 25
-            p.paylist.append(p.payoff)
+            p.pay_round = ((g.portfolio/10)*g.assetvalue + ((10-g.portfolio)/10)*125 - 50 + 100)/2
         elif p.type == 'first_mover' and g.seconds == 0:
-            p.payoff = 100
-            p.paylist.append(p.payoff)
-        p.final = p.random.choice(p.paylist)
-    g.options_one = g.options[0]
-    g.options_two = g.options[1]
-class Intro(Page):
-    @staticmethod
-    def is_displayed(player):
-        return player.round_number == 1
+            p.pay_round = 100
 
-class PracticeFirst(Page):
-    form_model = 'player'
-    form_fields = ['portfolio']
-    @staticmethod
-    def is_displayed(player):
-        return player.id_in_group == 1 and player.round_number >= 2 and player.round_number <= 6
+#class Intro(Page):
+    #@staticmethod
+    #def is_displayed(player):
+    #    return player.round_number == 1
 
-class PracticeSecond(Page):
-    form_model = 'player'
-    form_fields = ['option']
-    @staticmethod
-    def is_displayed(player):
-        return player.id_in_group != 1 and player.round_number >= 2 and player.round_number <= 6
+#class PracticeFirst(Page):
+#    form_model = 'group'
+#    form_fields = ['portfolio']
+#    @staticmethod
+#    def is_displayed(player):
+#        return player.id_in_group == 1 and player.round_number >= 2 and player.round_number <= 6
+
+#class PracticeSecond(Page):
+#    form_model = 'player'
+#    form_fields = ['option']
+#    @staticmethod
+#    def is_displayed(player):
+#        return player.id_in_group != 1 and player.round_number >= 2 and player.round_number <= 6
 
 class First(Page):
-    form_model = 'player'
+    form_model = 'group'
     form_fields = ['portfolio']
     @staticmethod
     def is_displayed(player):
-        return player.id_in_group == 1 and player.round_number >= 7 and player.round_number <= 26
+        return player.id_in_group == 1
+    @staticmethod
+    def vars_for_template(player):
+        if player.type == 'first_mover':
+            player.option = False
+        return dict(
+            option = player.option,
+        )
 class Second(Page):
     form_model = 'player'
     form_fields = ['option']
     @staticmethod
     def is_displayed(player):
-        return player.id_in_group != 1 and player.round_number >= 7 and player.round_number <= 26
+        return player.id_in_group != 1
+    @staticmethod
+    def vars_for_template(p: Player):
+        g = p.group
+        p.payoff_upper = round((g.portfolio / 10) * p.upper + ((10 - g.portfolio) / 10) * 125, 3)
+        p.payoff_lower = round((g.portfolio / 10) * p.lower + ((10 - g.portfolio) / 10) * 125, 3)
+        p.payoff_upper_50 = p.payoff_upper - 50
+        p.payoff_lower_50 = p.payoff_lower - 50
+        return dict(
+            payoff_upper=p.payoff_upper,
+            payoff_lower=p.payoff_lower,
+            payoff_upper_50=p.payoff_upper_50,
+            payoff_lower_50=p.payoff_lower_50,
+        )
 
 class WaitForP1(WaitPage):
     body_text = "Waiting for the choice of the first mover"
-    @staticmethod
-    def is_displayed(player):
-        return player.round_number >= 2
 
 class ResultsWaitPage(WaitPage):
     after_all_players_arrive = 'setPayoffs'
     body_text = 'Waiting for the second movers choices'
-    @staticmethod
-    def is_displayed(player):
-        return player.round_number >= 2
 
 class Results(Page):
     @staticmethod
+    def before_next_page(player, timeout_happened):
+        if player.round_number == C.NUM_ROUNDS:
+                random_round = random.randint(1, C.NUM_ROUNDS)
+                print(random_round)
+                player_in_selected_round = player.in_round(random_round)
+                player.payoff = player_in_selected_round.pay_round
+
+class RegroupWaitPage(WaitPage):
+    wait_for_all_groups = True
+    body_text = "Waiting for random regrouping with other two players"
+    after_all_players_arrive = 'creating_session'
+    @staticmethod
     def is_displayed(player):
-        return player.round_number >= 2
+        return player.round_number < C.NUM_ROUNDS
+
+class FinalWaitPage(WaitPage):
+    wait_for_all_groups = True
+    body_text = "Waiting for others finishing the games"
+    after_all_players_arrive = 'creating_session'
+    @staticmethod
+    def is_displayed(player):
+        return player.round_number == C.NUM_ROUNDS
+
 class FinalResults(Page):
     @staticmethod
     def is_displayed(player):
-        return player.round_number == 27
+        return player.round_number == C.NUM_ROUNDS
 
-page_sequence = [Intro, PracticeFirst, First, WaitForP1, PracticeSecond, Second, ResultsWaitPage, Results, FinalResults]
-
-
+page_sequence = [First, WaitForP1, Second, ResultsWaitPage, Results, RegroupWaitPage, FinalWaitPage, FinalResults]
