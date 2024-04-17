@@ -19,6 +19,7 @@ class Player(BasePlayer):
     option = models.BooleanField(
         choices=[(True, 'Option C'), (False, 'Option D'),]
     )
+    type = models.IntegerField()
 
 class Group(BaseGroup):
     pass
@@ -26,7 +27,7 @@ class Group(BaseGroup):
 
 def creating_session(s):
     # assign types to players
-    for p in s.get.players():
+    for p in s.get_players():
         if p.id_in_group == 1:
             p.type = 'first_mover'
         else:
