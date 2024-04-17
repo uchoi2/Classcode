@@ -1,10 +1,24 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Title</title>
-</head>
-<body>
+{{ extends "global/Page.html" }}
+{{ block title }}
+    <h1>Practice Round for the first mover</h1>
+{{ endblock }}
 
-</body>
-</html>
+{{ block content }}
+    <br><br>
+    <p>
+        You are the first mover.
+        Your payoff is determined as the average of the payoffs of two second movers
+        You have 10 number of tokens to allocate between the asset A and the asset B
+        You get $ {{ player.signal }} as a signal for the value of the asset A.
+        A noise is equally likely ranging from -$10 to $10.
+        Hence, the real value of the asset A is surely within the range from {{ player.lower }} to {{ player.upper }}.
+        The value of the asset B is $125 surely.
+
+        How many tokens would you allocate to the asset A? Write down the integer number between 0 and 10 in the following blank.
+    </p>
+
+    {{ formfields }}
+
+    {{ next_button }}
+
+{{ endblock }}

@@ -1,10 +1,12 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Title</title>
-</head>
-<body>
+{% extends "global/Page.html" %}
+{% load otree %}
+{{ block title }}Your Payoff{{ endblock }}
+{{ block content }}
+    <p>
+        Your final payoff is ${{ player.final }}.
+    </p>
 
-</body>
-</html>
+
+    {{ next_button }}
+
+{{ endblock }}

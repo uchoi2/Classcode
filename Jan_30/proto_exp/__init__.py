@@ -68,13 +68,34 @@ def setPayoffs(g: Group):
     g.assetvalue = round(g.assetdraw, 3)
 
     g.seconds = 0
+    g.options = []
+    g.round = g.round_number - 6
     for p in g.get_players():
         p.no = np.random.uniform(0,20)
         p.noise = p.no - 10
-        p.signal = g.assetvalue + round(p.noise, 3)
+        p.sigval = g.assetvalue + round(p.noise,30)
+        if p.sigval >= 160:
+            p.signal = 160
+        elif p.sigval <= 90:
+            p.signal = 90
+        elif p.sigval <= 160 and p.sigval >= 90:
+            p.signal = p.sigval
+        if p.signal >= 150:
+            p.upper = 160
+        else:
+            p.upper = p.signal + 10
+        if p.signal <= 100:
+            p.lower = 90
+        else:
+            p.lower = p.signal - 10
         g.first = p.portfolio
+        p.payoff_upper = (g.first/10)*p.upper + ((10 - g.first)/10)*125
+        p.payoff_lower = (g.first/10)*p.lower + ((10 - g.first)/10)*125
+        p.payoff_upper_50 = p.payoff_upper - 50
+        p.payoff_lower_50 = p.payoff_lower - 50
         if p.option == 'option C':
             g.seconds += 1
+        g.options.append(p.option)
         p.paylist = []
         if p.type == 'second_mover' and p.option == 'option C' and g.seconds == 2:
             p.payoff = (g.first/10)*g.assetvalue + ((10-g.first)/10)*125
@@ -95,7 +116,8 @@ def setPayoffs(g: Group):
             p.payoff = 100
             p.paylist.append(p.payoff)
         p.final = p.random.choice(p.paylist)
-
+    g.options_one = g.options[0]
+    g.options_two = g.options[1]
 class Intro(Page):
     @staticmethod
     def is_displayed(player):

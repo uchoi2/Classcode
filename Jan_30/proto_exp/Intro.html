@@ -1,10 +1,72 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Title</title>
-</head>
-<body>
+{{ extends "global/Page.html" }}
+{{ block title }}
+    <h1>Introduction</h1>
+{{ endblock }}
 
-</body>
-</html>
+{{ block content }}
+    <br><br>
+    <p>
+        Welcome to the ExCEN Lab.
+
+        1. Round and Group
+        The total number of rounds id 20.
+        Each group consists of three people: One first mover and two second movers.
+        Every round, you are randomly reassigned with two other people.
+
+        2. Assets
+        There are two types of assets: Asset A and Asset B.
+        The value of asset A is equally likely drawn from $90 to $160 before starting each round.
+        The value of asset B is fixed at $125.
+        The real value of the asset A is not known to you and your group members.
+
+        3. Role
+        In the experiment, you will be assigned the one of two roles: the first mover and the second mover
+        Your role is fixed for the entire rounds.
+        The first mover will be given 10 number of tokens.
+        Each token represents 10% of the total share of each asset in a payoff.
+        The first mover will choose the number of the tokens being allocated to the asset A.
+        The rest of the tokens are automatically assigned to the asset B.
+        The allocation by the first mover is known to the second movers when they make decisions.
+        The second mover will choose between option C and option D.
+
+        4. Imprecise Signal
+        Before making a decision, you will get imprecise private information called as a signal of the true value of the asset A.
+        The size of the imprecision,  called as a noise, is equally likely drawn from the range of -$10 to $10.
+        Suppose that the real value of Asset A is $130. Then, the range of the signal you can get is equally likely from $120 to $140.
+        All signals are perfectly privately given. Hence, no one know the value of signal you get and one can have same or different value of signals from the other.
+        Finally, the value of the signal cannot be smaller than the minimum value of the Asset A, $90, and the maximum value of the Asset B, $160.
+
+        5. Experimental Procedure
+        This experiment will be conducted as following for 20 rounds.
+        Step 1: The first mover choose the number of tokens assigned to asset A
+        Step 2: The first mover's allocation is known to two second movers within the same group.
+        Step 3: The second movers choose between option C and option D
+
+        6. Payoff
+        One of the payoffs of total 20 rounds is randomly selected by computer and given to you.
+
+        Suppose that the first mover chooses to allocate "k" number of tokens on the asset A and the real value of the asset is $X.
+        The second movers' payoffs are determined as following:
+        Case (1) If you choose option C and the other second mover in your group also chooses option C, then (k/10)*$X + ((10-k)/10)*$X.
+        Case (2) If you choose option C and the other second mover chooses option D, then your payoff is (k/10)*$X + ((10-k)/10)*$X - $50.
+        Case (3) If you choose option D, then you will get $100 regardless of others' choices.
+
+        The first mover's payoff is determined as the average of the payoffs of two second movers in the same group.
+
+        When k is 5 and $X is $130, then the possible list of payoffs are following:
+        Second Movers:
+        Case (1) (5/10)*$130 + ((10-5)/10)*$125 = $127.5
+        Case (2) (5/10)*$130 + ((10-5)/10)*$125 - $50 = $77.5
+        Case (3) $100
+
+        First Mover:
+        Case (1) ($127.5 + $127.5)/2 = $127.5
+        Case (2) ($127.5 + $77.5)/2 = $102.5
+        Case (3) ($100 + $100)/2 = $100
+
+
+    </p>
+
+    {{ next_button }}
+
+{{ endblock }}

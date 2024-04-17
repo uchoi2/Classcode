@@ -1,10 +1,23 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Title</title>
-</head>
-<body>
+{% extends "global/Page.html" %}
+{% load otree %}
+{{ block title }}Results{{ endblock }}
+{{ block content }}
+{{ if p.type == 'first_mover' }}
+    <p>
+        You allocate {{ group.first }} tokens on the asset A
+        The second movers in your group choose {{ group.option_one }} and {{ group.option_two }}.
+        The real value of the asset A is {{ group.assetvalue }}.
+        Your payoff is ${{ player.payoff }}
+    </p>
+{{ else }}
+    <p>
+        The first mover chooses to allocate {{ group.first }} tokens on the asset A
+        You choose {{ player.option }} and the other second player choose {% if player.id_in_group == 2%} {{ group.option_two }} {% elif player.id_in_group == 3 %} {{ group.option_one }} {% endif %}.
+        The real value of the asset A is {{ group.assetvalue }}.
+        Your payoff is ${{ player.payoff }}
+    </p>
+{{ endif }}
 
-</body>
-</html>
+    {{ next_button }}
+
+{{ endblock }}
