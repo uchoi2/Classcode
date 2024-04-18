@@ -9,7 +9,7 @@ class Subsession(BaseSubsession):
 class C(BaseConstants):
     NAME_IN_URL = 'fs_baseline'
     PLAYERS_PER_GROUP = 3
-    NUM_ROUNDS = 20
+    NUM_ROUNDS = 3
 
 class Player(BasePlayer):
     option = models.BooleanField(
