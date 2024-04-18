@@ -20,7 +20,7 @@
         If you click the next button, your payoff is drawn randomly from the history of payoffs.
         {% endif %}
     </p>
- {% if player.round_number != 1%}
+ {% if player.round_number != 1 %}
          <div class="card-header mb-3 text-center" style="background:#DEF0FC; color:#2E7099">
             <b>History Table</b>
         </div>
@@ -34,7 +34,7 @@
                         <th class="text-center">Payoff</th>
                     </tr>
                     <tbody>
-                    {% for p in player.in_previous_rounds %}
+                    {% for p in player.in_all_rounds %}
                         <tr>
                             <td class="text-center my_style">{{p.round_number}}</td>
                             <td class="text-center"> {{ p.group.assetvalue }}</td>
@@ -80,9 +80,9 @@
                         <th class="text-center">Payoff</th>
                     </tr>
                     <tbody>
-                    {% for p in player.in_previous_rounds %}
+                    {% for p in player.in_all_rounds %}
                         <tr>
-                            <td class="text-center my_style">{{player.round_number}}</td>
+                            <td class="text-center my_style">{{p.round_number}}</td>
                             <td class="text-center"> {{ p.group.assetvalue }}</td>
                             <td class="text-center"> {{ p.signal }}</td>
                             <td class="text-center">{% if p.option == True %} Option C {% else %} Option D {% endif %}</td>

@@ -49,7 +49,7 @@
                     <tbody>
                     {% for p in player.in_previous_rounds %}
                         <tr>
-                            <td class="text-center my_style">{{player.round_number}}</td>
+                            <td class="text-center my_style">{{p.round_number}}</td>
                             <td class="text-center"> {{ p.group.assetvalue }}</td>
                             <td class="text-center"> {{ p.signal }}</td>
                             <td class="text-center">{% if p.option == True %} Option C {% else %} Option D {% endif %}</td>
