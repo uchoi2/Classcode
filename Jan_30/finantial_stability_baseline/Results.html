@@ -1,0 +1,100 @@
+{% extends "global/Page.html" %}
+{% load otree %}
+{{ block title }}Results{{ endblock }}
+{{ block content }}
+{{ if player.type == 'first_mover' }}
+    <p>
+        You allocate {{ group.portfolio }} tokens on the asset A.
+        <br>
+        The second movers in your group {% if group.seconds == 2 %} both choose Option C.
+        {% elif group.seconds == 1 %} choose Option C and Option D each.
+        {% elif group.seconds == 0 %} both choose Option D.
+        {% endif %}
+        <br>
+        The real value of the asset A is {{ group.assetvalue }}.
+        <br>
+        Your payoff is ${{ player.pay_round }}
+        <br><br>
+        {% if player.round_number == C.NUM_ROUNDS%}
+        Now the total {{ C.NUM_ROUNDS }} rounds are finished.
+        If you click the next button, your payoff is drawn randomly from the history of payoffs.
+        {% endif %}
+    </p>
+ {% if player.round_number != 1%}
+         <div class="card-header mb-3 text-center" style="background:#DEF0FC; color:#2E7099">
+            <b>History Table</b>
+        </div>
+            <div class="row justify-content-center" style="max-height:40vh; overflow: scroll;">
+                <table class="table" style="width:500px">
+                    <tr>
+                        <th class="text-center">Round</th>
+                        <th class="text-center">Value of the Asset A</th>
+                        <th class="text-center">Signal of the Asset A</th>
+                        <th class="text-center">Your Choice</th>
+                        <th class="text-center">Payoff</th>
+                    </tr>
+                    <tbody>
+                    {% for p in player.in_previous_rounds %}
+                        <tr>
+                            <td class="text-center my_style">{{p.round_number}}</td>
+                            <td class="text-center"> {{ p.group.assetvalue }}</td>
+                            <td class="text-center"> {{ p.signal }}</td>
+                            <td class="text-center">{{ p.portfolio }}</td>
+                            <td class="text-center"> {{ p.pay_round }}</td>
+                        </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+             </div>
+    {% endif %}
+{{ else }}
+    <p>
+        The first mover chooses to allocate {{ group.portfolio }} tokens on the asset A.
+        <br>
+        You choose {% if player.option == True%} Option C. {% else %} Option D. {%endif%}
+        <br>The other second player choose {% if player.option == True and group.seconds == 2 %} Option C.
+        {% elif player.option == True and group.seconds ==  1 %} Option D.
+        {% elif player.option == False and group.seconds == 1 %} Option C.
+        {% elif player.option == False and group.seconds == 0%} Option D. {% endif %}
+        <br>
+        The real value of the asset A is {{ group.assetvalue }}.
+        <br>
+        Your payoff is ${{ player.pay_round }}
+        <br><br>
+        {% if player.round_number == C.NUM_ROUNDS%}
+        Now the total {{ C.NUM_ROUNDS }} rounds are finished.
+        If you click the next button, your payoff is drawn randomly from the history of payoffs.
+        {% endif %}
+    </p>
+    {% if player.round_number != 1  %}
+         <div class="card-header mb-3 text-center" style="background:#DEF0FC; color:#2E7099">
+            <b>History Table</b>
+        </div>
+            <div class="row justify-content-center" style="max-height:40vh; overflow: scroll;">
+                <table class="table" style="width:500px">
+                    <tr>
+                        <th class="text-center">Round</th>
+                        <th class="text-center">Value of the Asset A</th>
+                        <th class="text-center">Signal of the Asset A</th>
+                        <th class="text-center">Your Choice</th>
+                        <th class="text-center">Payoff</th>
+                    </tr>
+                    <tbody>
+                    {% for p in player.in_previous_rounds %}
+                        <tr>
+                            <td class="text-center my_style">{{player.round_number}}</td>
+                            <td class="text-center"> {{ p.group.assetvalue }}</td>
+                            <td class="text-center"> {{ p.signal }}</td>
+                            <td class="text-center">{% if p.option == True %} Option C {% else %} Option D {% endif %}</td>
+                            <td class="text-center"> {{ p.pay_round }}</td>
+                        </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+             </div>
+    {% endif %}
+{{ endif }}
+
+    {{ next_button }}
+
+{{ endblock }}

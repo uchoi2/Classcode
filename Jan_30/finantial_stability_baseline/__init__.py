@@ -7,7 +7,7 @@ class Subsession(BaseSubsession):
     pass
 
 class C(BaseConstants):
-    NAME_IN_URL = 'Financial_Stability'
+    NAME_IN_URL = 'fs_baseline'
     PLAYERS_PER_GROUP = 3
     NUM_ROUNDS = 2
 
@@ -29,13 +29,17 @@ class Player(BasePlayer):
         min=0,
         max=160,
     )
+    portfolio = models.IntegerField(
+        min=0,
+        max=10,
+    )
 
 
 
 class Group(BaseGroup):
     portfolio = models.IntegerField(
         min=0,
-        max=10
+        max=10,
     )
     rn = models.IntegerField(
         min=-5,
@@ -46,7 +50,6 @@ class Group(BaseGroup):
         min=0,
         max=2,
     )
-
 
 def creating_session(s):
     # assign types to players
@@ -110,12 +113,10 @@ def creating_session(s):
 def portfolio_choice(g: Group):
     return g.portfolio
 
-
-
 def setPayoffs(g: Group):
-    # Set up the baseline info
     g.seconds = 0
     for p in g.get_players():
+        p.portfolio = g.portfolio
         if p.option == True and p.type == 'second_mover':
             g.seconds += 1
     for p in g.get_players():
@@ -184,6 +185,13 @@ class Second(Page):
             payoff_lower_50=p.payoff_lower_50,
         )
 
+class WaitFromIntro(WaitPage):
+    wait_for_all_groups = True
+    body_text = 'Waiting for others to read the introduction'
+    after_all_players_arrive = 'creating_session'
+    @staticmethod
+    def is_displayed(player):
+        return player.round_number == 1
 class WaitForP1(WaitPage):
     body_text = "Waiting for the choice of the first mover"
 
@@ -221,4 +229,4 @@ class FinalResults(Page):
     def is_displayed(player):
         return player.round_number == C.NUM_ROUNDS
 
-page_sequence = [First, WaitForP1, Second, ResultsWaitPage, Results, RegroupWaitPage, FinalWaitPage, FinalResults]
+page_sequence = [WaitFromIntro, First, WaitForP1, Second, ResultsWaitPage, Results, RegroupWaitPage, FinalWaitPage, FinalResults]

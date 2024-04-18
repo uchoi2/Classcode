@@ -1,0 +1,63 @@
+{{ extends "global/Page.html" }}
+{{ block title }}
+    <h1> Round {{ group.round_number }} of the First Mover </h1>
+{{ endblock }}
+
+{{ block content }}
+    <br><br>
+    <p>
+        Round {{ group.round_number}}
+        <br>
+        You are the first mover.
+        <br>
+        Your payoff is determined as the average of the payoffs of two second movers.
+        <br>
+        You have 10 number of tokens to allocate between the asset A and the asset B.
+        <br>
+        Each token represents 10% of the total investment share.
+        <br>
+        You get $ {{ player.signal }} as a signal for the value of the asset A.
+        <br>
+        A noise is equally likely ranging from -$10 to $10.
+        <br>
+        Hence, the real value of the asset A is surely within the range from {{ player.lower }} to {{ player.upper }}.
+        <br>
+        The value of the asset B is $125 surely.
+        <br><br>
+
+        How many tokens would you allocate to the asset A? Write down the integer number between 0 and 10 in the following blank.
+    </p>
+
+    {{ formfields }}
+
+    {{ next_button }}
+
+ {% if player.round_number != 1 and player.type == 'first_mover' %}
+         <div class="card-header mb-3 text-center" style="background:#DEF0FC; color:#2E7099">
+            <b>History Table</b>
+        </div>
+            <div class="row justify-content-center" style="max-height:40vh; overflow: scroll;">
+                <table class="table" style="width:500px">
+                    <tr>
+                        <th class="text-center">Round</th>
+                        <th class="text-center">Value of the Asset A</th>
+                        <th class="text-center">Signal of the Asset A</th>
+                        <th class="text-center">Your Choice</th>
+                        <th class="text-center">Payoff</th>
+                    </tr>
+                    <tbody>
+                    {% for p in player.in_previous_rounds %}
+                        <tr>
+                            <td class="text-center my_style">{{p.round_number}}</td>
+                            <td class="text-center"> {{ p.group.assetvalue }}</td>
+                            <td class="text-center"> {{ p.signal }}</td>
+                            <td class="text-center">{{ p.portfolio }}</td>
+                            <td class="text-center"> {{ p.pay_round }}</td>
+                        </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+             </div>
+    {% endif %}
+
+{{ endblock }}

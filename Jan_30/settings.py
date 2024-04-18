@@ -15,9 +15,9 @@ SESSION_CONFIGS = [
         num_demo_participants=3,
     ),
     dict(
-      name='Financial_Stability',
-      display_name="Financial Stability",
-      app_sequence=['proto_exp', 'payment_info'],
+      name='fs_baseline',
+      display_name="Financial Stability: Baseline Treatment",
+      app_sequence=['finantial_stability_baseline_intro', 'finantial_stability_baseline', 'payment_info'],
       num_demo_participants=3,
     ),
     dict(
