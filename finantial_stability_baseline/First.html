@@ -1,16 +1,20 @@
 {{ extends "global/Page.html" }}
 {{ block title }}
-    <h1> Round {{ group.round_number }} of the Second Mover </h1>
+    <h1> Round {{ group.round_number }} of the First Mover </h1>
 {{ endblock }}
 
 {{ block content }}
     <br><br>
     <p>
-        Round {{ group.round_number }}
+        Round {{ group.round_number}}
         <br>
-        You are the second mover.
+        You are the first mover.
         <br>
-        The first mover choose to allocate {{ group.portfolio }} tokens on asset A.
+        Your payoff is determined as the average of the payoffs of two second movers.
+        <br>
+        You have 10 number of tokens to allocate between the asset A and the asset B.
+        <br>
+        Each token represents 10% of the total investment share.
         <br>
         You get $ {{ player.signal }} as a signal for the value of the asset A.
         <br>
@@ -20,20 +24,15 @@
         <br>
         The value of the asset B is $125 surely.
         <br><br>
-        If you choose option C, then you will get payoffs between ${{ player.payoff_lower }} and ${{ player.payoff_upper }} when the other choose option C.
-        <br>
-        Otherwise, you will getl dollars between ${{ player.payoff_lower_50 }} and ${{ player.payoff_upper_50 }}
-        <br>
-        If you choose option D, then you will surely get $100
-        <br><br>
 
-        Which option do you choose? Click one of the buttons below.
+        How many tokens would you allocate to the asset A? Write down the integer number between 0 and 10 in the following blank.
     </p>
 
-    <button name='option' value="True">Option C</button>
-    <button name='option' value="False">Option D</button>
+    {{ formfields }}
 
- {% if player.round_number != 1 and player.type == 'second_mover' %}
+    {{ next_button }}
+
+ {% if player.round_number != 1 and player.type == 'first_mover' %}
          <div class="card-header mb-3 text-center" style="background:#DEF0FC; color:#2E7099">
             <b>History Table</b>
         </div>
@@ -50,9 +49,9 @@
                     {% for p in player.in_previous_rounds %}
                         <tr>
                             <td class="text-center my_style">{{p.round_number}}</td>
-                            <td class="text-center"> {{ p.group.assetvalue }}</td>
-                            <td class="text-center"> {{ p.signal }}</td>
-                            <td class="text-center">{% if p.option == True %} Option C {% else %} Option D {% endif %}</td>
+                            <td class="text-center"> {{ p.recordav }}</td>
+                            <td class="text-center"> {{ p.recordsn }}</td>
+                            <td class="text-center">{{ p.portfolio }}</td>
                             <td class="text-center"> {{ p.pay_round }}</td>
                         </tr>
                     {% endfor %}

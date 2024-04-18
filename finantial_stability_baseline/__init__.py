@@ -9,7 +9,7 @@ class Subsession(BaseSubsession):
 class C(BaseConstants):
     NAME_IN_URL = 'fs_baseline'
     PLAYERS_PER_GROUP = 3
-    NUM_ROUNDS = 2
+    NUM_ROUNDS = 3
 
 class Player(BasePlayer):
     option = models.BooleanField(
@@ -19,6 +19,8 @@ class Player(BasePlayer):
     no = models.FloatField()
     sigval = models.FloatField()
     signal = models.FloatField()
+    recordsn = models.FloatField()
+    recordav = models.FloatField()
     upper = models.FloatField()
     lower = models.FloatField()
     payoff_lower = models.FloatField()
@@ -109,6 +111,8 @@ def creating_session(s):
                 p.lower = 90
             else:
                 p.lower = p.signal - 10
+            p.recordsn = p.signal
+
 
 def portfolio_choice(g: Group):
     return g.portfolio
@@ -117,6 +121,7 @@ def setPayoffs(g: Group):
     g.seconds = 0
     for p in g.get_players():
         p.portfolio = g.portfolio
+        p.recordav = g.assetvalue
         if p.option == True and p.type == 'second_mover':
             g.seconds += 1
     for p in g.get_players():
