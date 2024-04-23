@@ -1,16 +1,81 @@
-{{ extends "global/Page.html" }}
-{{ block title }}
-    <h1>Bidding</h1>>
-{{ endblock }}
+{% extends "global/Page.html" %}
+{% load otree %}
 
-{{ block content }}
-    <br><br>
-    <p>
-    You are one of {{ C.PLAYERS_PER_GROUP }} players who are bidding in an auction. Your value of the good is {{ player.value }}
+
+
+
+
+{% block title %}
+    Second-Price Sealed-Bid Auction
+{% endblock %}
+
+
+
+
+
+{% block content %}
+
+    <style>
+        .my_style {
+            font-family: Georgia, serif;
+            font-size: 16px;
+            letter-spacing: 2px;
+            word-spacing: 2px;
+            color: blue;
+            font-weight: normal;
+            text-decoration: none;
+            font-style: normal;
+            font-variant: normal;
+            text-transform: none;
+            }
+    </style>
+
+{#    <p class="my_style">#}
+
+    <div  class="my_style" style="width: 500px; border: 1px solid black;">
+        <p>
+        You are one of {{ Constants.players_per_group }} players who are bidding in an auction. Your value of the good is {{ player.value }}.
+        <br><br>
     </p>
-    <br><br>
+    </div>
 
-    {{ formfields }}
-    {{ next_button }}
 
-{{ endblock }}
+
+
+
+    {% formfields %}
+
+
+        <button class="otree-btn-next btn btn-primary">Submit bid</button>
+
+
+
+    {% if player.round_number != 1 %}
+         <div class="card-header mb-3 text-center" style="background:#DEF0FC; color:#2E7099">
+            <b>History Table</b>
+        </div>
+            <div class="row justify-content-center" style="max-height:40vh; overflow: scroll;">
+                <table class="table" style="width:500px">
+                    <tr>
+                        <th class="text-center">Round</th>
+                        <th class="text-center">Your value</th>
+                        <th class="text-center">Your bid</th>
+                        <th class="text-center">Win?</th>
+                        <th class="text-center">Price</th>
+                    </tr>
+                    <tbody>
+                    {% for p in player.in_previous_rounds %}
+                        <tr>
+                            <td class="text-center my_style">{{p.round_number}}</td>
+                            <td class="text-center"> {{ p.value }}</td>
+                            <td class="text-center"> {{p.bid}}</td>
+                            <td class="text-center">{% if p.is_winner == True %} Yes {% else %} No {% endif %}</td>
+                            <td class="text-center"> {{ p.group.price }}</td>
+                        </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+             </div>
+    {% endif %}
+
+{% endblock %}
